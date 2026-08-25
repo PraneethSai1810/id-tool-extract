@@ -1,5 +1,4 @@
 const API_BASE_URL = "https://id-tool-extract-1.onrender.com";
-
 export async function startGroup() {
   const response = await fetch(`${API_BASE_URL}/group/start`, { method: "POST" });
   if (!response.ok) throw new Error("Failed to start group");
