@@ -79,11 +79,11 @@ def _call_gemini(file_bytes: bytes, mime_type: str) -> str:
                 EXTRACTION_PROMPT,
             ],
             config=types.GenerateContentConfig(
-                response_mime_type="application/json",
-                max_output_tokens=2048,
-                thinking_config=types.ThinkingConfig(thinking_budget=0),
+            response_mime_type="application/json",
+            max_output_tokens=2048,
+)
             ),
-        )
+        
 
         return response.text.strip()
 
