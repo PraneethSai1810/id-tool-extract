@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional
 from enum import Enum
+from uuid import UUID
 
 
 class Gender(str, Enum):
@@ -19,17 +20,17 @@ class ExtractedID(BaseModel):
     title: Optional[str] = None
     issue_date: Optional[str] = None
     expiry_date: Optional[str] = None
-    trip_id: str
+    trip_id: UUID
 
 
 class GroupStartResponse(BaseModel):
-    trip_id: str
+    trip_id: UUID
 
 
 class GroupFinishRequest(BaseModel):
-    trip_id: str
+    trip_id: UUID
 
 
 class GroupFinishResponse(BaseModel):
-    trip_id: str
+    trip_id: UUID
     status: str

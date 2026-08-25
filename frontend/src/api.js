@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = "https://id-tool-extract-1.onrender.com";
 
 export async function startGroup() {
   const response = await fetch(`${API_BASE_URL}/group/start`, { method: "POST" });
