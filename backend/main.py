@@ -19,7 +19,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
     "http://localhost:5173",
-    "https://frontend-ochre-tau-86.vercel.app",
+    "https://id-extract-tool.vercel.app",
 ],
     allow_credentials=True,
     allow_methods=["*"],
