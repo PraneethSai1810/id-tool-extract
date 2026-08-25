@@ -15,6 +15,8 @@ function App() {
 
   const [tripId, setTripId] = useState(null);
   const [entries, setEntries] = useState([]);
+  const [startingGroup, setStartingGroup] = useState(false);
+  const [showWakeMessage, setShowWakeMessage] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [lastFinishedTripId, setLastFinishedTripId] = useState(null);
@@ -33,18 +35,34 @@ function App() {
     }
   };
 
-  const handleStartGroup = async () => {
-    setError(null);
-    setLastFinishedTripId(null);
-    try {
-      const data = await startGroup();
-      setTripId(data.trip_id);
-      setEntries([]);
-    } catch (err) {
-      setError("Couldn't start a new group. Check your connection and try again.");
-      console.error(err);
-    }
-  };
+ const handleStartGroup = async () => {
+  setError(null);
+  setLastFinishedTripId(null);
+  setStartingGroup(true);
+  setShowWakeMessage(false);
+
+  // If the request takes more than 3 seconds,
+  // Render is probably waking up from inactivity
+  const wakeTimer = setTimeout(() => {
+    setShowWakeMessage(true);
+  }, 3000);
+
+  try {
+    const data = await startGroup();
+
+    setTripId(data.trip_id);
+    setEntries([]);
+
+  } catch (err) {
+    setError("Couldn't start a new group. Check your connection and try again.");
+    console.error(err);
+
+  } finally {
+    clearTimeout(wakeTimer);
+    setStartingGroup(false);
+    setShowWakeMessage(false);
+  }
+};
 
   const handleFileSelected = async (file) => {
     setLoading(true);
@@ -177,12 +195,35 @@ function App() {
         {/* Main card */}
         <div className="bg-white rounded-2xl border border-black/5 shadow-sm p-6">
           {!tripId ? (
-            <button
-              onClick={handleStartGroup}
-              className="w-full py-4 text-lg font-semibold rounded-xl bg-passport text-white shadow-sm active:bg-ink active:scale-[0.98] transition-all min-h-14"
-            >
-              Start New Group
-            </button>
+            <div className="flex flex-col gap-3">
+  <button
+    onClick={handleStartGroup}
+    disabled={startingGroup}
+    className="w-full py-4 text-lg font-semibold rounded-xl bg-passport text-white shadow-sm active:bg-ink active:scale-[0.98] transition-all disabled:opacity-70 min-h-14"
+  >
+    {startingGroup ? (
+      <span className="flex items-center justify-center gap-2">
+        <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+        Starting...
+      </span>
+    ) : (
+      "Start New Group"
+    )}
+  </button>
+
+  {showWakeMessage && (
+    <div className="text-center px-3 py-2">
+      <p className="text-passport font-medium">
+        Server is starting up...
+      </p>
+
+      <p className="text-sm text-slate mt-1">
+        The service was inactive and may take up to a minute to wake up.
+        Please wait.
+      </p>
+    </div>
+  )}
+</div>
           ) : (
             <div className="flex flex-col gap-4">
               <UploadForm
